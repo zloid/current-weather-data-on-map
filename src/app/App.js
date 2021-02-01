@@ -1,11 +1,13 @@
-import { Map } from '../components/Map/Map'
 import React from 'react'
+import { WeatherMap } from '../components/WeatherMap/WeatherMap'
+import './App.css'
 
 const App = () => {
     return (
         <div>
-            weather now...??
-            {/* <Map /> */}
+            app..._
+            <hr />
+            <WeatherMap />
         </div>
     )
 }

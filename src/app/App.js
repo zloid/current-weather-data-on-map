@@ -5,7 +5,7 @@ import './App.css'
 const App = () => {
     return (
         <div>
-            app..._
+            app..._weather
             <hr />
             <WeatherMap />
         </div>

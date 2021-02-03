@@ -1,6 +1,6 @@
 {
   "name": "current-weather-data-on-map",
-  "version": "0.1.12",
+  "version": "0.1.14",
   "private": true,
   "dependencies": {
     "@reduxjs/toolkit": "^1.5.0",

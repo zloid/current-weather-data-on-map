@@ -12,7 +12,9 @@ export const Spinner = () => (
                 marginLeft: '45%',
                 paddingTop: '300px',
                 backgroundColor: 'transparent',
-                opacity: '.8'
+                opacity: '.8',
+                position: 'absolute',
+                zIndex: 100,
             }}
         />
     </span>

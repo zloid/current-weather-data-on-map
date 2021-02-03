@@ -56,9 +56,9 @@ const mapOfWeatherSlice = createSlice({
 // selectors
 export const isResultDataLoadedSelector = (state) =>
     state.mapOfWeatherReducer.isResultDataLoaded
-    export const finalForwardGeoDataSelector = (state) =>
+export const finalForwardGeoDataSelector = (state) =>
     state.mapOfWeatherReducer.finalForwardGeoData
-    export const isLoadingSelector = (state) => state.mapOfWeatherReducer.loading
+export const isLoadingSelector = (state) => state.mapOfWeatherReducer.loading
 
 // actions
 export const {
@@ -85,14 +85,14 @@ export function fetchWeather() {
                 'https://danepubliczne.imgw.pl/api/data/synop/'
             )
             const allStationWithWeather = await response.json()
-            
+
             dispatch(getWeatherData(allStationWithWeather))
 
             // forward geocoding by city name
             // preparing data for Promise.all
             let promisesOfForwardGeo = []
 
-            for (let i = 0; i < 2; i++) {
+            for (let i = 0; i < 5; i++) {
                 promisesOfForwardGeo.push(
                     fetch(
                         `http://api.positionstack.com/v1/forward?access_key=358c451c8bc4c40048fd777aa721ad30&query=1600%${allStationWithWeather[i].stacja}`
@@ -115,8 +115,9 @@ export function fetchWeather() {
                     dispatch(getFinalForwardGeoDataAndTemperature())
 
                     dispatch(getWeatherSuccess())
-
+                    
                     dispatch(checkIsResultDataLoaded())
+
                 })
                 .catch(() => alert('Some problem, please reload page!'))
         } catch (error) {

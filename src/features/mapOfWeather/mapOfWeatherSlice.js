@@ -3,6 +3,7 @@ import { createSlice } from '@reduxjs/toolkit'
 const initialState = {
     loading: false,
     hasErrors: false,
+    isResultDataLoaded: false,
     weatherData: [],
     resultDataForMap: [],
     finalForwardGeoData: [],
@@ -44,11 +45,17 @@ const mapOfWeatherSlice = createSlice({
 
             state.finalForwardGeoData = newArrayOfResultObject
         },
+        checkIsResultDataLoaded(state) {
+            state.isResultDataLoaded = true
+        },
     },
 })
 
-// selector
-export const weatherSelector = (state) => state.mapOfWeatherReducer
+// selectors
+export const isResultDataLoadedSelector = (state) => state.mapOfWeatherReducer.isResultDataLoaded
+// export const weatherSelector = (state) => state.mapOfWeatherReducer
+export const finalForwardGeoDataSelector = (state) =>
+    state.mapOfWeatherReducer.finalForwardGeoData
 
 // actions
 export const {
@@ -57,6 +64,7 @@ export const {
     getWeatherFailure,
     pullForwardGeoDataForMap,
     getFinalForwardGeoDataAndTemperature,
+    checkIsResultDataLoaded,
 } = mapOfWeatherSlice.actions
 
 // main reducer
@@ -77,9 +85,10 @@ export function fetchWeather() {
             dispatch(getWeatherSuccess(allStationWithWeather))
 
             // forward geocoding by city name
+            // preparing data for Promise.all
             let promisesOfForwardGeo = []
 
-            for (let i = 0; i < 1; i++) {
+            for (let i = 0; i < allStationWithWeather.length; i++) {
                 promisesOfForwardGeo.push(
                     fetch(
                         `http://api.positionstack.com/v1/forward?access_key=358c451c8bc4c40048fd777aa721ad30&query=1600%${allStationWithWeather[i].stacja}`
@@ -91,18 +100,17 @@ export function fetchWeather() {
                 promise
                     .then((resolve) => resolve.json())
                     .then((geoData) => {
-                        console.log('key', key)
                         return geoData.data[0]
                     })
             )
 
             Promise.all(promisesOfForwardGeo)
                 .then((response) => {
-                    console.log(response)
-
                     dispatch(pullForwardGeoDataForMap(response))
 
                     dispatch(getFinalForwardGeoDataAndTemperature())
+
+                    dispatch(checkIsResultDataLoaded())
                 })
                 .catch(() => alert('Some problem, please reload page!'))
         } catch (error) {

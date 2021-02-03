@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from 'react'
 
-import { useDispatch, 
-    // useSelector
- } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 
 import { MapContainer, TileLayer, Marker, Popup, Tooltip } from 'react-leaflet'
 import {
     fetchWeather,
-    // weatherSelector,
+    finalForwardGeoDataSelector,
+    isResultDataLoadedSelector,
 } from '../../features/mapOfWeather/mapOfWeatherSlice'
 
 export const WeatherMapTwo = () => {
@@ -18,20 +17,56 @@ export const WeatherMapTwo = () => {
         temperature: '-1',
     })
 
+    const isResultDataLoaded = useSelector(isResultDataLoadedSelector)
+    const resultDataOfStationAndWeather = useSelector(
+        finalForwardGeoDataSelector
+    )
+
+    console.log(isResultDataLoaded)
+
     const dispatch = useDispatch()
 
-    // const mapOfWeatherReducer = useSelector(weatherSelector)
-/* 
-    function renderStacja() {
-        if (mapOfWeatherReducer.someData) {
-            console.log('mdk: ', mapOfWeatherReducer.someData)
+    function renderAllExistingStation() {
+        if (isResultDataLoaded) {
+            console.log(resultDataOfStationAndWeather[0])
+            console.log(resultDataOfStationAndWeather[0].name)
+            console.log(resultDataOfStationAndWeather[0]?.latitude)
+            console.log(resultDataOfStationAndWeather[0]?.longitude)
 
-            return mapOfWeatherReducer.someData
+            return resultDataOfStationAndWeather[0]?.temperatura
+        }
+        return 'no'
+    }
+
+    function signAllStationAsMarkerOnMap() {
+        if (isResultDataLoaded) {
+            const filteredValidStation = resultDataOfStationAndWeather.filter(
+                (station) => station.name !== undefined
+            )
+
+            if (filteredValidStation.length > 0) {
+                const allStation = filteredValidStation.map((station) => {
+                    return (
+                        <Marker
+                            key={station.id}
+                            position={[station.latitude, station.longitude]}
+                        >
+                            {/* <Popup>{station.name}</Popup> */}
+
+                            <Tooltip permanent>
+                                {station.name + ' : ' + station.temperatura}
+                            </Tooltip>
+                        </Marker>
+                    )
+                })
+
+                console.log('allStation', allStation)
+                return allStation
+            }
         }
 
-        return ''
+        return null
     }
- */
 
     // dispatch thunk when component first mounts
     useEffect(() => {
@@ -49,7 +84,7 @@ export const WeatherMapTwo = () => {
                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                     attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
                 />
-
+                {/* 
                 <Marker
                     position={[
                         forwardGeodata.latitude,
@@ -57,9 +92,10 @@ export const WeatherMapTwo = () => {
                     ]}
                 >
                     <Popup>{forwardGeodata.name}</Popup>
-                    {/* <Tooltip permanent>{forwardGeodata.temperature}</Tooltip> */}
-                    <Tooltip permanent>{/* renderStacja() */}</Tooltip>
-                </Marker>
+                    <Tooltip permanent>{renderAllExistingStation()}</Tooltip>
+                </Marker> */}
+
+                {signAllStationAsMarkerOnMap()}
             </MapContainer>
         </div>
     )

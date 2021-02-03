@@ -16,14 +16,16 @@ const mapOfWeatherSlice = createSlice({
         getWeather(state) {
             state.loading = true
         },
-        getWeatherSuccess(state, { payload }) {
-            state.weatherData = payload
+        getWeatherSuccess(state) {
             state.loading = false
             state.hasErrors = false
         },
         getWeatherFailure(state) {
             state.loading = false
             state.hasErrors = true
+        },
+        getWeatherData(state, { payload }) {
+            state.weatherData = payload
         },
         pullForwardGeoDataForMap(state, { payload }) {
             state.resultDataForMap = payload
@@ -52,16 +54,18 @@ const mapOfWeatherSlice = createSlice({
 })
 
 // selectors
-export const isResultDataLoadedSelector = (state) => state.mapOfWeatherReducer.isResultDataLoaded
-// export const weatherSelector = (state) => state.mapOfWeatherReducer
-export const finalForwardGeoDataSelector = (state) =>
+export const isResultDataLoadedSelector = (state) =>
+    state.mapOfWeatherReducer.isResultDataLoaded
+    export const finalForwardGeoDataSelector = (state) =>
     state.mapOfWeatherReducer.finalForwardGeoData
+    export const isLoadingSelector = (state) => state.mapOfWeatherReducer.loading
 
 // actions
 export const {
     getWeather,
     getWeatherSuccess,
     getWeatherFailure,
+    getWeatherData,
     pullForwardGeoDataForMap,
     getFinalForwardGeoDataAndTemperature,
     checkIsResultDataLoaded,
@@ -81,14 +85,14 @@ export function fetchWeather() {
                 'https://danepubliczne.imgw.pl/api/data/synop/'
             )
             const allStationWithWeather = await response.json()
-
-            dispatch(getWeatherSuccess(allStationWithWeather))
+            
+            dispatch(getWeatherData(allStationWithWeather))
 
             // forward geocoding by city name
             // preparing data for Promise.all
             let promisesOfForwardGeo = []
 
-            for (let i = 0; i < allStationWithWeather.length; i++) {
+            for (let i = 0; i < 2; i++) {
                 promisesOfForwardGeo.push(
                     fetch(
                         `http://api.positionstack.com/v1/forward?access_key=358c451c8bc4c40048fd777aa721ad30&query=1600%${allStationWithWeather[i].stacja}`
@@ -109,6 +113,8 @@ export function fetchWeather() {
                     dispatch(pullForwardGeoDataForMap(response))
 
                     dispatch(getFinalForwardGeoDataAndTemperature())
+
+                    dispatch(getWeatherSuccess())
 
                     dispatch(checkIsResultDataLoaded())
                 })

@@ -1,14 +1,12 @@
 import React from 'react'
-import { WeatherMapTwo } from '../components/WeatherMap/WeatherMapTwo'
+import { WeatherMap } from '../components/WeatherMap/WeatherMap'
 import './App.css'
 
 const App = () => {
     return (
-        <div>
-            app..._weather
-            <hr />
-            <WeatherMapTwo />
-        </div>
+        <>
+            <WeatherMap />
+        </>
     )
 }
 

@@ -5,6 +5,7 @@ const initialState = {
     hasErrors: false,
     weatherData: [],
     resultDataForMap: [],
+    finalForwardGeoData: [],
 }
 
 const mapOfWeatherSlice = createSlice({
@@ -26,7 +27,23 @@ const mapOfWeatherSlice = createSlice({
         pullForwardGeoDataForMap(state, { payload }) {
             state.resultDataForMap = payload
         },
-        getFinalForwardGeoDataAndTemperature() {},
+        getFinalForwardGeoDataAndTemperature(state) {
+            const { weatherData, resultDataForMap } = state
+
+            const newArrayOfResultObject = weatherData.map((_, key) => {
+                const obj = {}
+
+                obj.id = weatherData[key]?.id_stacji
+                obj.name = resultDataForMap[key]?.name
+                obj.latitude = resultDataForMap[key]?.latitude
+                obj.longitude = resultDataForMap[key]?.longitude
+                obj.temperatura = weatherData[key]?.temperatura
+
+                return obj
+            })
+
+            state.finalForwardGeoData = newArrayOfResultObject
+        },
     },
 })
 
@@ -84,6 +101,8 @@ export function fetchWeather() {
                     console.log(response)
 
                     dispatch(pullForwardGeoDataForMap(response))
+
+                    dispatch(getFinalForwardGeoDataAndTemperature())
                 })
                 .catch(() => alert('Some problem, please reload page!'))
         } catch (error) {

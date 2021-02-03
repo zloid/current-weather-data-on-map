@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react'
-import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet'
+import { MapContainer, TileLayer, Marker, Popup, Tooltip } from 'react-leaflet'
 
 export const WeatherMap = () => {
-    const [forwardGeodata, setforwardGeodata] = useState({
+    const [forwardGeodata] = useState({
         latitude: 51.549566,
         longitude: 23.555343,
         name: 'Włodawa',
@@ -16,11 +16,15 @@ export const WeatherMap = () => {
 
             const data = await result.json()
 
-            const cityNames = data.map((weatherData) => [weatherData.stacja, weatherData.temperatura])
+            // const cityNames = data.map((weatherData) => ({stac: weatherData.stacja, temp: weatherData.temperatura}))
+            const cityNames = data.map((weatherData) => [
+                weatherData.stacja,
+                weatherData.temperatura,
+            ])
+            // const cityNames = data
 
             console.log(cityNames)
-            /* 
-
+/* 
             const getForwardGeocod = await fetch(
                 `http://api.positionstack.com/v1/forward?access_key=358c451c8bc4c40048fd777aa721ad30&query=1600%${
                     cityNames[Math.floor(Math.random() * cityNames.length)]
@@ -32,17 +36,37 @@ export const WeatherMap = () => {
             // obj
             const resultForwardGeocodForMap = getForwardGeocodJSON.data[0]
 
-            console.log(resultForwardGeocodForMap) */
+            console.log(
+                'resultForwardGeocodForMap :',
+                resultForwardGeocodForMap
+            )
 
-            // setforwardGeodata(resultForwardGeocodForMap)
+            console.log('forwardGeodata: ', forwardGeodata)
+            if (typeof resultForwardGeocodForMap === 'object') {
+                setforwardGeodata(resultForwardGeocodForMap)
+            }
+            
+            */
+           //todo
+            // setforwardGeodata({
+            //     county: 'Łomżyński',
+            //     label: 'Mikolajki, Poland',
+            //     latitude: 53.13359,
+            //     locality: 'Mikolajki',
+            //     longitude: 21.97437,
+            //     name: 'Mikolajki',
+            // })
+
+            console.log('forwardGeodata: ', forwardGeodata)
         } catch (error) {
             console.log('there has been an error')
+            alert('errrrrrr')
         }
     }
 
     useEffect(() => {
         loadWeatherData()
-    })
+    }, [])
 
     return (
         <div className="mainMap">
@@ -63,6 +87,7 @@ export const WeatherMap = () => {
                     ]}
                 >
                     <Popup>{forwardGeodata.name}</Popup>
+                    <Tooltip permanent>{forwardGeodata.name}</Tooltip>
                 </Marker>
                 {/* 
                 {Array(1)

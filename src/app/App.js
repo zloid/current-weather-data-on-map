@@ -1,5 +1,5 @@
 import React from 'react'
-import { WeatherMap } from '../components/WeatherMap/WeatherMap'
+import { WeatherMapTwo } from '../components/WeatherMap/WeatherMapTwo'
 import './App.css'
 
 const App = () => {
@@ -7,7 +7,7 @@ const App = () => {
         <div>
             app..._weather
             <hr />
-            <WeatherMap />
+            <WeatherMapTwo />
         </div>
     )
 }

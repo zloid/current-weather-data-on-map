@@ -1,6 +1,6 @@
 {
   "name": "current-weather-data-on-map",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "homepage": "https://zloid.github.io/current-weather-data-on-map",
   "private": true,
   "dependencies": {

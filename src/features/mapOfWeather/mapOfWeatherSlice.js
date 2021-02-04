@@ -118,10 +118,7 @@ export function fetchWeather() {
             let promisesOfForwardGeo = []
 
             for (let i = 0; i < allStationWithWeather.length; i++) {
-                promisesOfForwardGeo.push(
-                    // fetch(
-                    //     `http://api.positionstack.com/v1/forward?access_key=358c451c8bc4c40048fd777aa721ad30&query=1600%${allStationWithWeather[i].stacja}`
-                    // )
+                promisesOfForwardGeo.push(                    
                     fetch(`https://api.opencagedata.com/geocode/v1/json?q=${allStationWithWeather[i].stacja}&key=384e118920984d548792d048d5ed3497`)
                 )
             }

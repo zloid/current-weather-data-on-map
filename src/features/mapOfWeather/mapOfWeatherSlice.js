@@ -1,11 +1,12 @@
 import { createSlice } from '@reduxjs/toolkit'
 
 /**
+ * Result shape of one station
  * @typedef {Object} FinalGeoData
  * @property {string} id
- * @property {string} name
- * @property {number} latitude
- * @property {number} longitude
+ * @property {string=} name
+ * @property {number=} latitude
+ * @property {number=} longitude
  * @property {string} temperatura
  */
 
@@ -42,6 +43,7 @@ const mapOfWeatherSlice = createSlice({
         getFinalForwardGeoDataAndTemperature(state) {
             const { weatherData, resultDataForMap } = state
 
+            /**@type {FinalGeoData[]} */
             const newArrayOfResultObject = weatherData.map((_, key) => {
                 const obj = {}
 
@@ -115,7 +117,7 @@ export function fetchWeather() {
             // preparing data for Promise.all
             let promisesOfForwardGeo = []
 
-            for (let i = 0; i < 1; i++) {
+            for (let i = 0; i < 5; i++) {
                 promisesOfForwardGeo.push(
                     fetch(
                         `http://api.positionstack.com/v1/forward?access_key=358c451c8bc4c40048fd777aa721ad30&query=1600%${allStationWithWeather[i].stacja}`
@@ -123,7 +125,7 @@ export function fetchWeather() {
                 )
             }
 
-            promisesOfForwardGeo = promisesOfForwardGeo.map((promise, key) =>
+            promisesOfForwardGeo = promisesOfForwardGeo.map((promise) =>
                 promise
                     .then((resolve) => resolve.json())
                     .then((geoData) => {

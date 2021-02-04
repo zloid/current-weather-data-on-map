@@ -1,6 +1,10 @@
 import React from 'react'
 import spinner from './spinner.gif'
 
+/**
+ * React functional component
+ * @returns {JSX.Element} gif spinner
+ */
 export const Spinner = () => (
     <span>
         <img

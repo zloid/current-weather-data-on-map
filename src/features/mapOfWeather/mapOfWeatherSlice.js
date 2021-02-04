@@ -48,9 +48,9 @@ const mapOfWeatherSlice = createSlice({
                 const obj = {}
 
                 obj.id = weatherData[key]?.id_stacji
-                obj.name = resultDataForMap[key]?.name
-                obj.latitude = resultDataForMap[key]?.latitude
-                obj.longitude = resultDataForMap[key]?.longitude
+                obj.name = resultDataForMap[key]?.components.administrative
+                obj.latitude = resultDataForMap[key]?.geometry.lat
+                obj.longitude = resultDataForMap[key]?.geometry.lng
                 obj.temperatura = weatherData[key]?.temperatura
 
                 return obj
@@ -117,11 +117,12 @@ export function fetchWeather() {
             // preparing data for Promise.all
             let promisesOfForwardGeo = []
 
-            for (let i = 0; i < 5; i++) {
+            for (let i = 0; i < allStationWithWeather.length; i++) {
                 promisesOfForwardGeo.push(
-                    fetch(
-                        `http://api.positionstack.com/v1/forward?access_key=358c451c8bc4c40048fd777aa721ad30&query=1600%${allStationWithWeather[i].stacja}`
-                    )
+                    // fetch(
+                    //     `http://api.positionstack.com/v1/forward?access_key=358c451c8bc4c40048fd777aa721ad30&query=1600%${allStationWithWeather[i].stacja}`
+                    // )
+                    fetch(`https://api.opencagedata.com/geocode/v1/json?q=${allStationWithWeather[i].stacja}&key=384e118920984d548792d048d5ed3497`)
                 )
             }
 
@@ -129,7 +130,7 @@ export function fetchWeather() {
                 promise
                     .then((resolve) => resolve.json())
                     .then((geoData) => {
-                        return geoData.data[0]
+                        return geoData.results[0]
                     })
             )
 

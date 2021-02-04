@@ -18,14 +18,35 @@ import {
 } from '../../features/mapOfWeather/mapOfWeatherSlice'
 
 export const WeatherMap = () => {
-    // boolean
-    const isResultDataLoaded = useSelector(isResultDataLoadedSelector)
+    const dispatch = useDispatch()
+
     const isDataLoading = useSelector(isLoadingSelector)
+    const isResultDataLoaded = useSelector(isResultDataLoadedSelector)
+
     const resultDataOfStationAndWeather = useSelector(
         finalForwardGeoDataSelector
     )
 
-    const dispatch = useDispatch()
+    /**
+     * For getting temperature color on map
+     *
+     * @function pickColor
+     * @param {string} temperature
+     * @returns {string} color rely by input temperature
+     */
+    function pickColor(temperature) {
+        temperature = Number(temperature)
+        switch (true) {
+            case temperature >= 0 && temperature <= 2:
+                return '#ff9900'
+            case temperature > 2 && temperature < 10:
+                return 'red'
+            case temperature < 0 && temperature >= -2:
+                return '#0066ff'
+            case temperature < -2 && temperature >= -10:
+                return 'blue'
+        }
+    }
 
     function signAllStationAsMarkerOnMap() {
         if (isResultDataLoaded) {
@@ -50,10 +71,10 @@ export const WeatherMap = () => {
                             <Circle
                                 center={[station.latitude, station.longitude]}
                                 pathOptions={{
-                                    color:
-                                        station.temperatura > 0
+                                    color: pickColor(station.temperatura),
+                                    /* station.temperatura > 0
                                             ? '#ff9900'
-                                            : '#0066ff',
+                                            : '#0066ff', */
                                 }}
                                 // radius={station.temperatura > 0 ? station.temperatura * 15000 : station.temperatura * 15000 * -1}
                                 radius={20000}
@@ -74,8 +95,6 @@ export const WeatherMap = () => {
         dispatch(fetchWeather())
     }, [dispatch])
 
-    // const fillBlueOptions = { fillColor: 'blue' }
-
     return (
         <>
             {isDataLoading ? <Spinner /> : null}
@@ -86,23 +105,11 @@ export const WeatherMap = () => {
                     zoom={7}
                     scrollWheelZoom={true}
                 >
-                    {/*  {console.log(isDataLoading)}
-                    {isDataLoading ? <Spinner /> : <Spinner />} */}
-
                     <TileLayer
                         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                         attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
                     />
                     {signAllStationAsMarkerOnMap()}
-
-                    {/*  {
-                        
-                        <Circle
-                            center={[51, 19.0609]}
-                            pathOptions={{ fillColor: 'blue' }}
-                            radius={10000 * -0.9 * -1}
-                        />
-                    } */}
                 </MapContainer>
             </div>
         </>

@@ -1,5 +1,14 @@
 import { createSlice } from '@reduxjs/toolkit'
 
+/**
+ * @typedef {Object} FinalGeoData
+ * @property {string} id
+ * @property {string} name
+ * @property {number} latitude
+ * @property {number} longitude
+ * @property {string} temperatura
+ */
+
 const initialState = {
     loading: false,
     hasErrors: false,
@@ -53,12 +62,26 @@ const mapOfWeatherSlice = createSlice({
     },
 })
 
-// selectors
+/**
+ * Selector
+ * @param {object} state - global State
+ * @returns {boolean}
+ */
+export const isLoadingSelector = (state) => state.mapOfWeatherReducer.loading
+/**
+ * Selector
+ * @param {object} state - global State
+ * @returns {boolean}
+ */
 export const isResultDataLoadedSelector = (state) =>
     state.mapOfWeatherReducer.isResultDataLoaded
+/**
+ * Selector
+ * @param {object} state - global State
+ * @returns {FinalGeoData[]}
+ */
 export const finalForwardGeoDataSelector = (state) =>
     state.mapOfWeatherReducer.finalForwardGeoData
-export const isLoadingSelector = (state) => state.mapOfWeatherReducer.loading
 
 // actions
 export const {
@@ -92,7 +115,7 @@ export function fetchWeather() {
             // preparing data for Promise.all
             let promisesOfForwardGeo = []
 
-            for (let i = 0; i < 5; i++) {
+            for (let i = 0; i < 1; i++) {
                 promisesOfForwardGeo.push(
                     fetch(
                         `http://api.positionstack.com/v1/forward?access_key=358c451c8bc4c40048fd777aa721ad30&query=1600%${allStationWithWeather[i].stacja}`
@@ -115,9 +138,8 @@ export function fetchWeather() {
                     dispatch(getFinalForwardGeoDataAndTemperature())
 
                     dispatch(getWeatherSuccess())
-                    
-                    dispatch(checkIsResultDataLoaded())
 
+                    dispatch(checkIsResultDataLoaded())
                 })
                 .catch(() => alert('Some problem, please reload page!'))
         } catch (error) {
